@@ -1,20 +1,13 @@
-import React, {useState, useEffect} from 'react'
-import ReactDOM from 'react-dom'
-import api from '../../services/api'
 import 'boxicons'
-
+import React, { useEffect, useState } from 'react'
 //imgs
 import logo from '../../assets/img/vodu-friends-logo.png'
-
+import api from '../../services/api'
 //style
 import {
-   Panel,
-   Logo, 
-   InputText,
-   AlignRight,
-   Groups, A
+   A, AlignRight,
+   Groups, Logo, Panel
 } from './style'
-
 
 export default function Home(){
 
@@ -54,7 +47,7 @@ export default function Home(){
                Add people group
             </button>
 
-            <form action="" id="formGroup" class="hidden" autocomplete='off'>
+            <form action="" id="formGroup" className="hidden" autoComplete='off'>
                <label id="tip">Group's name</label>
                <AlignRight>
                   <box-icon name='x' size='25px' color='#FFDD2B' onClick={() => hiddenAddGroup()}></box-icon>
@@ -73,7 +66,7 @@ export default function Home(){
             <hr/>
             
             <div>
-               {groups.map(group => <Groups>{group.name}</Groups>)}            
+               {groups.map(group => <Groups key={group.id}>{group.name}</Groups>)}            
             </div>
          </Panel>
 

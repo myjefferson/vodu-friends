@@ -1,12 +1,17 @@
 <h1 align="center">
-<img width="220px" src="./frontend/src/assets/img/vodu-friends-logo.png">
-<h3 align="center">This interactive app aims to entertain people with their friends.</h3>
+<img width="220px" src="./frontend/src/assets/img/vodu-friends-logo.png"/>
+<h2 align="center">This interactive app aims to entertain people with their friends.</h2>
 </h1>
 
 <h1>Usage guide</h1>
 <i>You need node and yarn in your computer</i>
 
-First start yarn
+Clone this repository
+```
+git clone https://github.com/myjefferson/vodu-friends.git
+```
+
+After cloning, type: 
 ```
 yarn
 ```

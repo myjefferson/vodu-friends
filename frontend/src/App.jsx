@@ -8,11 +8,13 @@ import GeneralStyle from './assets/style/general-style'
 export default function App() {
   return (
     <> 
-      <div id='menuScale'>
-      <Menu />
-      </div>
-      <div id="containerScale">
-        <Routes />
+      <div id="wrapper">
+        <div id='menuScale'>
+          <Menu />
+        </div>
+        <div id="containerScale">
+          <Routes />
+        </div>
       </div>
       <GeneralStyle/>
     </>

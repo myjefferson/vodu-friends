@@ -1,26 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import api from '../../services/api'
-import {Li, H1, Container, AlignRight, useStyles, StyledModal} from './style'
+import {uuid} from 'uuidv4'
+
+import {useStyles, useModal} from './style'
 import Modal from '@material-ui/core/Modal'
 import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
 
-function getModalStyle(){
-   const top = 50
-   const left = 50
-
-   return {
-      top: `${top}%`,
-      left: `${left}%`,
-      transform: `translate(-${top}%, -${left}%)`
-   }
-}
-
 export default function MyFriends(){
    //Modal
    const classes = useStyles();
+   const modal = useModal();
    const [open, setOpen] = useState(false)
-   const [modalStyle] = useState(getModalStyle)
 
    const handleOpen = () => {
       setOpen(true)
@@ -41,16 +32,27 @@ export default function MyFriends(){
       })
    }, [])
 
-   function insertPerson(){
+   async function createPerson(){
       var name = document.querySelector('#name').value
       var surname = document.querySelector('#surname').value
 
-      const res = api.post('/friends', {
-         id: 5,
-         id_group: 5,
-         id_avatar: 5,
+      var idUser = uuid(), idGroup = uuid()
+
+      const res = await api.post('/friends', {
+         id: idUser,
+         id_group: idGroup,
          name: `${name}`,
          surname: `${surname}`
+      })
+
+      //create avatar
+      await api.post('/avatars', {
+         user_avatar: idUser,
+         skin: "",
+         hair: "",
+         shirt: "",
+         pant: "",
+         shoes: ""
       })
 
       const friend = res
@@ -60,25 +62,25 @@ export default function MyFriends(){
 
    return(
       <>
-         <div>
-            <H1>All my friends</H1>
-            <AlignRight><button id="btnDefault" onClick={handleOpen}>Add person</button></AlignRight>
+         <div className={classes.header}>
+            <h1 className={classes.h1}>All my friends</h1>
+            <button id="btnDefault" className={classes.alignRight} onClick={handleOpen}>Add person</button>
          </div>
-         <Container>     
+         <div className={classes.container}>     
             {friends.map(friend => 
-               <a href="/friend">
-                  <Li>
+               <a href={`friend?user_avatar=${friend.id}`} key={friend.id}>
+                  <li className={classes.li}>
                      <img src="" alt={friends.name}></img>
                      {friend.name} <br/>
-                  </Li>
+                  </li>
                </a>)
             }
-         </Container>
+         </div>
 
          <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
-            className={classes.modal}
+            className={modal.modal}
             open={open}
             onClose={handleClose}
             closeAfterTransition
@@ -88,24 +90,25 @@ export default function MyFriends(){
             }}
          >
             <Fade in={open}>
-               <StyledModal style={modalStyle} className={classes.paper}>
-                  <form action="" autocomplete='off'>
-                     <h2>Register person</h2>
-                     <div style={{width: 230, float: 'left'}}>
-                        <p>Name</p>
-                        <input type="text" id='name'/>
-                     </div>
-                     <div style={{width: 230, float: 'left', marginLeft: 15}}>
-                        <p>Surname</p>
-                        <input type="text" id='surname'/>
-                     </div>
-                     <button id="btnGreen" onClick={() => {insertPerson(); handleClose()}}>Confirm</button>
-                     <button id="btnRed" onClick={handleClose}>Cancel</button>
-                  </form>
-               </StyledModal>
+               <div className={classes.styledModal}>
+                  <div  className={modal.paper}>
+                     <form action="" autoComplete='off'>
+                        <h2>Register person</h2>
+                        <div style={{width: 230, float: 'left'}}>
+                           <p>Name</p>
+                           <input type="text" id='name'/>
+                        </div>
+                        <div style={{width: 230, float: 'left', marginLeft: 15}}>
+                           <p>Surname</p>
+                           <input type="text" id='surname'/>
+                        </div>
+                        <button id="btnGreen" onClick={() => {createPerson(); handleClose()}}>Confirm</button>
+                        <button id="btnRed" onClick={handleClose}>Cancel</button>
+                     </form>
+                  </div>
+               </div>
             </Fade>
          </Modal>
       </>
    )
 }
-

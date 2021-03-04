@@ -7,12 +7,30 @@ export default createGlobalStyle`
    }
    
    body{
-      width: 100vw;
       margin: 0;
       padding: 0;
       font-family: gotham, sans-serif;
       font-size: 19px;
    }
+
+   /*scale*/
+   #wrapper{
+      width: 100vw;
+      height: 100vh;
+
+      display: grid;
+      grid-template-columns: 22% 80%;
+   }
+
+   div#menuScale{
+      
+   }
+
+   div#containerScale{
+      width: 100%;
+      padding: 3%;
+   }
+
 
    hr{
       margin: 5px 0 20px 0;
@@ -24,8 +42,6 @@ export default createGlobalStyle`
 
    /*All Buttons*/
    #btnRed, #btnGreen, #btnBlue, #btnDefault{
-      position: relative;
-      z-index: 1;
       display: block;
       cursor: pointer;
 
@@ -73,16 +89,6 @@ export default createGlobalStyle`
       padding: 12px 10px 12px 10px;
       margin: 15px 0 20px 0;
       transition: 0.6s;
-   }
-
-   /*scale*/
-   div#menuScale{
-      float: left;
-   }
-
-   div#containerScale{
-      padding: 3%;
-      float:left;
    }
 
    /*scrolls*/

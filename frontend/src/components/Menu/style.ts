@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Panel = styled.div`
    position: relative;
    z-index: 1;
-   width: 280px;
+   width: 100%;
    height: 100vh;
    margin: 0;
    padding: 30px 15px 30px 30px;
@@ -13,7 +13,8 @@ export const Panel = styled.div`
 
 export const Logo = styled.img`
    display: block;
-   width: 200px;
+   padding: 10px;
+   width: 100%;
    margin: 0 0 30px 0;
 `
 
