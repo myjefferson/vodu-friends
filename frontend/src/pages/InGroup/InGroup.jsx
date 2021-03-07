@@ -17,16 +17,24 @@ export default function MyFriends(){
       setOpen(true)
    }
 
-   const handleClose = () => {
+   const handleClose = (e) => {
+      e.preventDefault()
       setOpen(false)
    }
 
    //get friends
    const [friends, setFriends] = useState([])
+   const [group, setGroup] = useState([])
 
    useEffect(() => {
-      api.get('gets').then(res => {
+      const url = window.location.search
+      const query = new URLSearchParams(url)
+      const tags = query.get('id')
+
+      api.get(`inGroup?id=${tags}`).then(res => {
          setFriends(res.data.friends)
+         setGroup(res.data.group)
+
       }).catch((err) => {
          console.error("Error" + err)
       })
@@ -35,12 +43,16 @@ export default function MyFriends(){
    async function createPerson(){
       var name = document.querySelector('#name').value
       var surname = document.querySelector('#surname').value
+   
+      const url = window.location.search
+      const query = new URLSearchParams(url)
+      const tags = query.get('id') 
 
-      var idUser = uuid(), idGroup = uuid()
+      const idUser = uuid()
 
       const res = await api.post('/friends', {
          id: idUser,
-         id_group: idGroup,
+         id_group: tags,
          name: `${name}`,
          surname: `${surname}`
       })
@@ -63,7 +75,7 @@ export default function MyFriends(){
    return(
       <>
          <div className={classes.header}>
-            <h1 className={classes.h1}>All my friends</h1>
+            <h1 className={classes.h1}>{group.map(group => group.name)}</h1>
             <button id="btnDefault" className={classes.alignRight} onClick={handleOpen}>Add person</button>
          </div>
          <div className={classes.container}>     

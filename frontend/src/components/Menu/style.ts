@@ -1,37 +1,38 @@
-import styled from 'styled-components';
+import {makeStyles} from '@material-ui/core/styles';
 
-export const Panel = styled.div`
-   position: relative;
-   z-index: 1;
-   width: 100%;
-   height: 100vh;
-   margin: 0;
-   padding: 30px 15px 30px 30px;
-   overflow-x: hidden;
+export const useStyles = makeStyles({
+   div : {
+      position: 'relative',
+      zIndex: 1,
+      width: '100%',
+      height: '100vh',
+      margin: '0',
+      padding: '30px 15px 30px 30px',
+      overflowX: 'hidden'
+   },
 
-`
+   img: {
+      display: 'block',
+      padding: '10px',
+      width: '100%',
+      margin: '0 0 30px 0',
+   },
 
-export const Logo = styled.img`
-   display: block;
-   padding: 10px;
-   width: 100%;
-   margin: 0 0 30px 0;
-`
+   AlignRight : {
+      float: 'right',
+   },
 
-export const AlignRight = styled.div`
-   float: right;
-`
+   Groups: {
+      cursor: 'pointer',
+      display: 'block',
+      color: 'white',
+      background: '#2E303D',
+      padding: '15px',
+      borderRadius: '3px',
+      margin: '0 0 10px 0',
+   },
 
-export const Groups = styled.li`
-   cursor: pointer;
-   display: block;
-   color: white;
-   background: #2E303D;
-   padding: 15px;
-   border-radius: 3px;
-   margin: 0 0 10px 0;
-`
-
-export const A = styled.a`
-   text-decoration: none;
-`
+   A: {
+      textDecoration: 'none',
+   }
+})

@@ -234,9 +234,9 @@ export default function Friend(){
                </div>
             </div>
 
-            <div className={classes.aboutUser}>
+            {/*<div className={classes.aboutUser}>
                About User
-            </div>
+            </div>*/}
          </div>
       </>
    )

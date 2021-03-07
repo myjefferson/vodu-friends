@@ -65,6 +65,16 @@ app.post('/groups', (req, res) => {
    return res.json(insert)
 })
 
+//Get Group info
+app.get('/inGroup', (req,res) => {
+   const {id} = req.query
+
+   const group = object.groups.filter(group => group.id === id)
+   const friends = object.friends.filter(friends => friends.id_group === id)
+
+   return res.json({group, friends})
+})
+
 //USERS
 app.get('/friends/:id', (req, res) => {
    const reqBody = req.body

@@ -1,17 +1,17 @@
 import 'boxicons'
 import React, { useEffect, useState } from 'react'
+import {uuid} from 'uuidv4'
 //imgs
 import logo from '../../assets/img/vodu-friends-logo.png'
 import api from '../../services/api'
 //style
-import {
-   A, AlignRight,
-   Groups, Logo, Panel
-} from './style'
+import {useStyles} from './style'
+
 
 export default function Home(){
-
+   
    const [groups, setGroups] = useState([])
+   const classes = useStyles();
 
    //load groups
    useEffect(() => {
@@ -28,7 +28,7 @@ export default function Home(){
       var newGroup = document.querySelector('#text-group').value
 
       const res = await api.post('/groups', {
-         id: 4,
+         id: uuid(),
          name: `${newGroup}`
       });
 
@@ -40,8 +40,8 @@ export default function Home(){
 
    return(
       <>
-         <Panel id='scrollMenu'>
-            <Logo src={logo} alt="VoDu Friends"/>
+         <div className={classes.div} id='scrollMenu'>
+            <img className={classes.img} src={logo} alt="VoDu Friends"/>
 
             <button type="submit" className="" id="btnGreen" name="btnAddGroup" onClick={() => showAddGroup()}>
                Add people group
@@ -49,9 +49,9 @@ export default function Home(){
 
             <form action="" id="formGroup" className="hidden" autoComplete='off'>
                <label id="tip">Group's name</label>
-               <AlignRight>
+               <div className={classes.AlignRight}>
                   <box-icon name='x' size='25px' color='#FFDD2B' onClick={() => hiddenAddGroup()}></box-icon>
-               </AlignRight>
+               </div>
                
                <input type="text" id="text-group"/>
 
@@ -60,15 +60,12 @@ export default function Home(){
                </button>
             </form>
 
-            <A href="/myFriends"><button id="btnBlue">
-               My Friends
-            </button></A>
             <hr/>
             
             <div>
-               {groups.map(group => <Groups key={group.id}>{group.name}</Groups>)}            
+               {groups.map(group => <a href={`/inGroup?id=${group.id}`} className={classes.A}><li className={classes.Groups} key={group.id}>{group.name}</li></a>)}            
             </div>
-         </Panel>
+         </div>
 
       </>
    )
