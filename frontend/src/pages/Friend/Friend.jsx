@@ -6,7 +6,6 @@ import api from '../../services/api'
 import './style/app.scss'
 import { useStyles } from './style/style'
 
-
 export default function Friend(){   
    var setSkin, setHair, setShirt, setPant, setShoes
 
