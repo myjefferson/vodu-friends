@@ -52,13 +52,16 @@ export const useStyles = makeStyles({
    },
 
    headerInfo: {
+      position: 'relative',
+      zIndex: 4,
       width: '100% !important',
       display: 'grid',
       gridTemplateColumns: '80% 10%',
    },
    
-   btnEdit: {
+   btn: {
       position: 'absolute',
+      zIndex: 1,
       right: '0',
       width: '100px !important',
       height: '50px',

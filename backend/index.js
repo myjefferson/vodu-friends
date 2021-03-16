@@ -45,10 +45,11 @@ fs.readFile('./data/data.json', (err, data) => {
    }
 })   
 
-//GETALL
+//GET ALL
 app.get('/gets', (req, res) => {        
    return res.json(object)  
 })
+
 
 //GROUPS
 app.post('/groups', (req, res) => {
@@ -65,7 +66,6 @@ app.post('/groups', (req, res) => {
    return res.json(insert)
 })
 
-//Get Group info
 app.get('/inGroup', (req,res) => {
    const {id} = req.query
 
@@ -75,7 +75,32 @@ app.get('/inGroup', (req,res) => {
    return res.json({group, friends})
 })
 
-//USERS
+app.delete('/groups/:id', (req,res) => {
+   const {id} = req.params
+
+   const group = object.groups.findIndex(groups => groups.id === id)
+   object.groups.splice(group, 1)
+
+   for(let i = 0; i < object.friends.length; i++){
+      for(let i = 0; i < object.friends.length; i++){
+         const deleteAvatar = object.avatars.findIndex(avatars => avatars.user_avatar === object.friends[i].id)
+         object.avatars.splice(deleteAvatar, 1)
+      }
+
+      const deleteFriend = object.friends.findIndex(friends => friends.id_group === id)
+      object.friends.splice(deleteFriend, 1)
+   }
+
+   var insert = object
+   
+   fs.writeFile('./data/data.json', JSON.stringify(insert), (err) => {
+      if(err) throw err
+   })
+
+   return res.json(insert)
+})
+
+//FRIENDS
 app.get('/friends/:id', (req, res) => {
    const reqBody = req.body
    
@@ -104,6 +129,24 @@ app.post('/friends', (req, res) => {
    return res.json(insert)
 })
 
+app.delete('/friends/:id', (req,res) => {
+   const {id} = req.params
+
+   const friend = object.friends.findIndex(friend => friend.id === id)
+   const avatar = object.avatars.findIndex(avatar => avatar.user_avatar === id)
+
+   object.friends.splice(friend, 1)
+   object.avatars.splice(avatar, 1)
+
+   var insert = object
+
+   fs.writeFile('./data/data.json', JSON.stringify(insert), (err) => {
+      if(err) throw err
+   })
+
+   return res.json(insert)
+})
+
 //AVATAR
 app.get('/avatars', (req,res) => {
    const {user_avatar} = req.query
@@ -111,7 +154,7 @@ app.get('/avatars', (req,res) => {
    const avatars = object.avatars.filter(avatar => avatar.user_avatar === user_avatar)
    const friends = object.friends.filter(friend => friend.id === user_avatar)
 
-   return res.json({friends ,avatars})
+   return res.json({friends, avatars})
 })
 
 //INSERT AVATAR
@@ -130,21 +173,30 @@ app.post('/avatars', (req,res) => {
 })
 
 //UPDATE AVATAR
-app.put('/avatars/:id_avatar', (req,res) => {
-   const reqBody = req.body
+app.put('/avatars/:user_avatar', (req,res) => {
+   const {user_avatar} = req.params
+   const {skin, hair, shirt, pant, shoes} = req.body
 
-   object.avatars.push(reqBody)
+   const indexAvatar = object.avatars.findIndex(avatar => avatar.user_avatar === user_avatar)
    
-   var insert = object
+   const upAvatar = {
+      user_avatar,
+      skin,
+      hair,
+      shirt,
+      pant,
+      shoes
+   }
 
+   object.avatars[indexAvatar] = upAvatar
+
+   const insert = object
    fs.writeFile('./data/data.json', JSON.stringify(insert), (err) => {
       if(err) throw err
    })
 
-   return res.json(insert)
+   return res.json(upAvatar)
 })
-
-//{"id_avatar": 5, "skin":"0xFFC8A0","hair":"0x141414", "shirt":"0xF0F0F0", "pant":"0xF2F2F2", "shoes":"0x3A3A3A"}
 
 app.listen(8080, () => {
    console.log("Server ok")

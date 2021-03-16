@@ -6,6 +6,9 @@ import logo from '../../assets/img/vodu-friends-logo.png'
 import api from '../../services/api'
 //style
 import {useStyles} from './style'
+import { IconButton, MenuItem } from '@material-ui/core'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import Menu from '@material-ui/core/Menu'
 
 
 export default function Home(){
@@ -23,7 +26,7 @@ export default function Home(){
    }, [])
 
 
-   //create a new group
+   //CREATE A NEW GROUP
    async function createGroup(){
       var newGroup = document.querySelector('#text-group').value
 
@@ -32,16 +35,37 @@ export default function Home(){
          name: `${newGroup}`
       });
 
-      const group = res.data
-
+      const group = res.data.groups
       setGroups([...groups, group])
    }
 
+   //DELETE A GROUP
+   async function deleteGroup(idGroup){
+      api.delete(`groups/${idGroup}`).then(res => {
+         const result = res.data.groups
+
+         setGroups([result])
+         window.location.href = "/"
+         
+      }).catch((err) => { console.error('error' + err) })
+   }
+
+   //MENU
+   const [anchorEl, setAnchorEl] = useState(null);
+   const open = Boolean(anchorEl);
+ 
+   const handleClick = (event) => {
+     setAnchorEl(event.currentTarget)
+   };
+ 
+   const handleClose = () => {
+     setAnchorEl(null);
+   };
 
    return(
       <>
          <div className={classes.div} id='scrollMenu'>
-            <img className={classes.img} src={logo} alt="VoDu Friends"/>
+            <a href="/"><img className={classes.img} src={logo} alt="VoDu Friends"/></a>
 
             <button type="submit" className="" id="btnGreen" name="btnAddGroup" onClick={() => showAddGroup()}>
                Add people group
@@ -56,14 +80,55 @@ export default function Home(){
                <input type="text" id="text-group"/>
 
                <button type="submit" id="btnGreen" onClick={() => createGroup()}>
-                  Confirm
+                  Create group
                </button>
             </form>
 
             <hr/>
             
             <div>
-               {groups.map(group => <a href={`/inGroup?id=${group.id}`} className={classes.A}><li className={classes.Groups} key={group.id}>{group.name}</li></a>)}            
+               {groups.map(group => 
+                  <>
+                     <div className={classes.Groups} key={group.id}>
+                        <a 
+                           className={classes.A} 
+                           href={`/inGroup?id=${group.id}`} 
+                        >
+                           <li 
+                              className={classes.Li}>{group.name}
+                           </li>
+                        </a>
+                        <IconButton
+                           className={classes.Menu}
+                           aria-label="more"
+                           aria-controls="long-menu"
+                           aria-haspopup="true"
+                           onClick={handleClick}
+                        >
+                           <MoreVertIcon  />
+                        </IconButton>
+
+                        <Menu 
+                           id="long-menu"
+                           anchorEl={anchorEl}
+                           keepMounted
+                           open={open}
+                           onClose={handleClose}
+                           PaperProps={{
+                              style: {
+                                 maxHeight: 30 * 4,
+                                 width: '8ch'  
+                              }
+                           }}
+                        >
+                           <MenuItem onClick={handleClose}>Rename</MenuItem>
+                           <MenuItem onClick={ () => {deleteGroup(group.id)} }>Delete</MenuItem>                           
+                        </Menu>
+                     </div>
+                  </>
+                  )
+                  
+               }            
             </div>
          </div>
 

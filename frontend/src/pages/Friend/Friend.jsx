@@ -8,7 +8,26 @@ import { useStyles } from './style/style'
 
 
 export default function Friend(){   
-   
+   var setSkin, setHair, setShirt, setPant, setShoes
+
+   const url = window.location.search
+   const param = new URLSearchParams(url)
+   const paramAvatar = param.get('user_avatar')
+
+   api.get(`/avatars?user_avatar=${paramAvatar}`).then(res => {
+      const data = res.data.avatars
+      const index = data.filter(avatar => avatar.user_avatar === paramAvatar)
+      
+      if(index.length > 0){
+         setSkin = index[0].skin
+         setHair = index[0].hair
+         setShirt = index[0].shirt
+         setPant = index[0].pant
+         setShoes = index[0].shoes
+      }
+
+      console.log(index)
+   })
    
    const classes = useStyles();
 
@@ -68,14 +87,13 @@ export default function Friend(){
 
             var getColor = Number(event.target.name);
 
-            const newMaterial = new THREE.MeshPhysicalMaterial(0xffffff)
-            newMaterial.color = new THREE.Color(getColor)
-            newMaterial.roughness = 0.58
-            avatar.getObjectByName('Head').material = newMaterial
-            avatar.getObjectByName('ArmLeft').material = newMaterial
-            avatar.getObjectByName('ArmRight').material = newMaterial
-            avatar.getObjectByName('Pescoco').material = newMaterial
-             
+            const skin = new THREE.MeshPhysicalMaterial({color: new THREE.Color(getColor), roughness: 0.58})
+            avatar.getObjectByName('Head').material = skin
+            avatar.getObjectByName('ArmLeft').material = skin
+            avatar.getObjectByName('ArmRight').material =skin
+            avatar.getObjectByName('Pescoco').material = skin
+            
+            setSkin = String(event.target.name)
          })
 
          const btnHair = document.getElementById('colorHair')
@@ -84,11 +102,10 @@ export default function Friend(){
 
             var getColor = Number(event.target.name);
 
-            const newMaterial = new THREE.MeshPhysicalMaterial(0xffffff)
-            newMaterial.color = new THREE.Color(getColor)
-            newMaterial.roughness = 0.55
-            avatar.getObjectByName('Hair').material = newMaterial
+            const hair = new THREE.MeshPhysicalMaterial({color: new THREE.Color(getColor), roughness: 0.55})
+            avatar.getObjectByName('Hair').material = hair
             
+            setHair = String(event.target.name)
          })
 
          const btnShirt = document.getElementById('colorShirt')
@@ -97,10 +114,10 @@ export default function Friend(){
 
             var getColor = Number(event.target.name);
 
-            const newMaterial = new THREE.MeshPhysicalMaterial(0xffffff)
-            newMaterial.color = new THREE.Color(getColor)
-            newMaterial.roughness = 0.55
-            avatar.getObjectByName('Shirt').material = newMaterial
+            const shirt = new THREE.MeshPhysicalMaterial({color: new THREE.Color(getColor), roughness: 0.55})
+            avatar.getObjectByName('Shirt').material = shirt
+
+            setShirt = String(event.target.name)
          })
 
          const btnPant = document.getElementById('colorPant')
@@ -109,13 +126,14 @@ export default function Friend(){
 
             var getColor = Number(event.target.name);
 
-            const newMaterial = new THREE.MeshPhysicalMaterial(0xffffff)
-            newMaterial.color = new THREE.Color(getColor)
-            newMaterial.roughness = 0.55
-            avatar.getObjectByName('LeftThigh').material = newMaterial
-            avatar.getObjectByName('LeftPerna').material = newMaterial
-            avatar.getObjectByName('RightThigh').material = newMaterial
-            avatar.getObjectByName('RightPerna').material = newMaterial           
+            const pant = new THREE.MeshPhysicalMaterial({color : new THREE.Color(getColor), roughness: 0.55})
+
+            avatar.getObjectByName('LeftThigh').material = pant
+            avatar.getObjectByName('LeftPerna').material = pant
+            avatar.getObjectByName('RightThigh').material = pant
+            avatar.getObjectByName('RightPerna').material = pant 
+            
+            setPant = String(event.target.name)
          })
 
          const btnShoes = document.getElementById('colorShoes')
@@ -124,12 +142,39 @@ export default function Friend(){
 
             var getColor = Number(event.target.name);
 
-            const newMaterial = new THREE.MeshPhysicalMaterial(0xffffff)
-            newMaterial.color = new THREE.Color(getColor)
-            newMaterial.roughness = 0.55
-            avatar.getObjectByName('RightFoot').material = newMaterial
-            avatar.getObjectByName('LeftFoot').material = newMaterial          
+            const shoes = new THREE.MeshPhysicalMaterial({color: new THREE.Color(getColor), roughness: 0.55})
+            
+            avatar.getObjectByName('RightFoot').material = shoes
+            avatar.getObjectByName('LeftFoot').material = shoes  
+            
+            setShoes = String(event.target.name)
          })
+
+         function setTextureAvatar(){
+            //Skin
+            const skin = new THREE.MeshPhysicalMaterial({color: new THREE.Color(Number(setSkin)), roughness: 0.58})
+            avatar.getObjectByName('Head').material = skin
+            avatar.getObjectByName('ArmLeft').material = skin
+            avatar.getObjectByName('ArmRight').material =skin
+            avatar.getObjectByName('Pescoco').material = skin
+            //Hair
+            const hair = new THREE.MeshPhysicalMaterial({color: new THREE.Color(Number(setHair)), roughness: 0.55})
+            avatar.getObjectByName('Hair').material = hair
+            //Shirt
+            const shirt = new THREE.MeshPhysicalMaterial({color: new THREE.Color(Number(setShirt)), roughness: 0.55})
+            avatar.getObjectByName('Shirt').material = shirt
+            //Pant
+            const pant = new THREE.MeshPhysicalMaterial({color : new THREE.Color(Number(setPant)), roughness: 0.55})
+            avatar.getObjectByName('LeftThigh').material = pant
+            avatar.getObjectByName('LeftPerna').material = pant
+            avatar.getObjectByName('RightThigh').material = pant
+            avatar.getObjectByName('RightPerna').material = pant  
+            //Shoes
+            const shoes = new THREE.MeshPhysicalMaterial({color: new THREE.Color(Number(setShoes)), roughness: 0.55})      
+            avatar.getObjectByName('RightFoot').material = shoes
+            avatar.getObjectByName('LeftFoot').material = shoes    
+
+         } setTextureAvatar()
 
          animate()
       })  
@@ -150,6 +195,21 @@ export default function Friend(){
       window.addEventListener('resize', onWindowResize)
    }
 
+   function updateAvatar(){
+
+      const updates = {
+         skin: setSkin,
+         hair: setHair,
+         shirt: setShirt,
+         pant: setPant,
+         shoes: setShoes
+      }
+
+      api.put(`/avatars/${paramAvatar}`, updates)
+
+      window.location.href = `?user_avatar=${paramAvatar}`
+   }
+
    return (
       <>  
          { Avatar() }
@@ -157,7 +217,8 @@ export default function Friend(){
          <div className={classes.defaultContainer}>
          
             <div className={classes.headerInfo}>
-               <button className={classes.btnEdit} onClick={() => {handle()}} id="btnDefault">Edit</button>
+               {/*<button className={classes.btnEdit} onClick={() => {handle()}} id="btnDefault">Edit</button>*/}
+               <button className={classes.btn} onClick={() => updateAvatar()} id="btnGreen">Save</button>
             </div>
 
             <div className={classes.boxLeft}>

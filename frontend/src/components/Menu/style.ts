@@ -25,7 +25,7 @@ export const useStyles = makeStyles({
    Groups: {
       cursor: 'pointer',
       display: 'block',
-      color: 'white',
+      color: '#fff',
       background: '#2E303D',
       padding: '15px',
       borderRadius: '3px',
@@ -33,6 +33,14 @@ export const useStyles = makeStyles({
    },
 
    A: {
+      color: '#fff',
       textDecoration: 'none',
+      listStyle: 'none'
+   },
+
+   Menu: {
+      color: '#fff !important',
+      float: 'right',
+      margin: '-33px -15px 0 0 !important'
    }
 })

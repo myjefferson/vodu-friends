@@ -2,7 +2,7 @@ import { Backdrop } from '@material-ui/core'
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 
 export const useStyles = makeStyles({
-   li : {
+   friend : {
       cursor : 'pointer',
       position: 'relative',
       zIndex: 1,
@@ -11,10 +11,20 @@ export const useStyles = makeStyles({
       padding: '12px',
       margin: '13px',
       width: '160px',
-      color: 'white',
       background: '#252732',
       borderRadius: '4px',
       border: '1px solid #454961',
+   },
+
+   li: {
+      listStyle: 'none',
+      color: 'white',
+   },
+
+   options: {
+      float: 'right',
+      margin: '-33px -10px -20px 0',
+      color: '#fff'
    },
 
    h1: {

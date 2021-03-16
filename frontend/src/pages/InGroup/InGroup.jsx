@@ -1,13 +1,21 @@
-import React, {useEffect, useState} from 'react'
-import api from '../../services/api'
-import {uuid} from 'uuidv4'
-
-import {useStyles, useModal} from './style'
-import Modal from '@material-ui/core/Modal'
+import { IconButton, MenuItem } from '@material-ui/core'
 import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
+import Menu from '@material-ui/core/Menu'
+import Modal from '@material-ui/core/Modal'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import React, { useEffect, useState } from 'react'
+import { uuid } from 'uuidv4'
+import api from '../../services/api'
+import { useModal, useStyles } from './style'
+
 
 export default function MyFriends(){
+   //Query Url
+   const url = window.location.search
+   const query = new URLSearchParams(url)
+   const tags = query.get('id')
+
    //Modal
    const classes = useStyles();
    const modal = useModal();
@@ -17,8 +25,7 @@ export default function MyFriends(){
       setOpen(true)
    }
 
-   const handleClose = (e) => {
-      e.preventDefault()
+   const handleClose = () => {
       setOpen(false)
    }
 
@@ -27,10 +34,6 @@ export default function MyFriends(){
    const [group, setGroup] = useState([])
 
    useEffect(() => {
-      const url = window.location.search
-      const query = new URLSearchParams(url)
-      const tags = query.get('id')
-
       api.get(`inGroup?id=${tags}`).then(res => {
          setFriends(res.data.friends)
          setGroup(res.data.group)
@@ -43,33 +46,48 @@ export default function MyFriends(){
    async function createPerson(){
       var name = document.querySelector('#name').value
       var surname = document.querySelector('#surname').value
-   
-      const url = window.location.search
-      const query = new URLSearchParams(url)
-      const tags = query.get('id') 
 
       const idUser = uuid()
 
       const res = await api.post('/friends', {
-         id: idUser,
-         id_group: tags,
+         id: `${idUser}`,
+         id_group: `${tags}`,
          name: `${name}`,
          surname: `${surname}`
       })
 
       //create avatar
       await api.post('/avatars', {
-         user_avatar: idUser,
-         skin: "",
-         hair: "",
-         shirt: "",
-         pant: "",
-         shoes: ""
+         user_avatar: `${idUser}`,
+         skin: "0xB26644",
+         hair: "0x46251F",
+         shirt: "0xF2F2F2",
+         pant: "0x3A3A3A",
+         shoes: "0xF0F0F0"
       })
 
       const friend = res
 
       setFriends([...friends, friend])
+
+      window.location.href = `/inGroup?id=${tags}`
+   }
+
+   //Menu Friend
+   const [anchorEl, setAnchorEl] = useState(null)
+   const options = Boolean(anchorEl)
+
+   const handleClickFriend = (event) => {
+      setAnchorEl(event.currentTarget)
+   }
+
+   const handleCloseFriend = () => {
+      setAnchorEl(null)
+   }
+
+   function removeFriend(id){
+      api.delete(`/friends/${id}`)
+      window.location.href = `inGroup?id=${tags}`
    }
 
    return(
@@ -80,12 +98,41 @@ export default function MyFriends(){
          </div>
          <div className={classes.container}>     
             {friends.map(friend => 
-               <a href={`friend?user_avatar=${friend.id}`} key={friend.id}>
-                  <li className={classes.li}>
-                     <img src="" alt={friends.name}></img>
-                     {friend.name} <br/>
-                  </li>
-               </a>)
+               <div className={classes.friend} key={friend.id}>
+                  <a href={`friend?user_avatar=${friend.id}`}>
+                     <li className={classes.li}>
+                        <img src="" alt={friends.name}></img>
+                        {friend.name} <br/>
+                     </li>
+                  </a>
+
+                  <IconButton
+                     className={classes.options}
+                     aria-label="more"
+                     aria-controls="long-menu"
+                     aria-haspopup="true"
+                     onClick={handleClickFriend}
+                  >
+                     <MoreVertIcon/>
+                  </IconButton>
+
+                  <Menu
+                     id="long-menu"
+                     anchorEl={anchorEl}
+                     keepMounted
+                     open={options}
+                     onClose={handleCloseFriend}
+                     PaperProps={{
+                        style: {
+                           maxHeight: 30 * 4,
+                           width: '10ch'
+                        }
+                     }}
+                  >
+                     <MenuItem onClick={handleCloseFriend}>Rename</MenuItem>
+                     <MenuItem onClick={ () => removeFriend(friend.id)}>Delete Friend</MenuItem>
+                  </Menu>
+               </div> )
             }
          </div>
 
@@ -104,7 +151,7 @@ export default function MyFriends(){
             <Fade in={open}>
                <div className={classes.styledModal}>
                   <div  className={modal.paper}>
-                     <form action="" autoComplete='off'>
+                     <form autoComplete='off'>
                         <h2>Register person</h2>
                         <div style={{width: 230, float: 'left'}}>
                            <p>Name</p>
