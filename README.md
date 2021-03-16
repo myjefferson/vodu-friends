@@ -11,7 +11,12 @@ Clone this repository
 git clone https://github.com/myjefferson/vodu-friends.git
 ```
 
-After cloning, type: 
+After cloning, in the frontend folder, type: 
+```
+yarn
+```
+
+And in the frontend folder, write also: 
 ```
 yarn
 ```

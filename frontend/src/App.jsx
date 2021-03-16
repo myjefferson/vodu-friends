@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Menu from './components/Menu/Menu'
+import Panel from './components/Menu/Menu'
 
 import Routes from './routes/routes'
 import GeneralStyle from './assets/style/general-style'
@@ -10,7 +10,7 @@ export default function App() {
     <> 
       <div id="wrapper">
         <div id='menuScale'>
-          <Menu />
+          <Panel />
         </div>
         <div id="containerScale">
           <Routes />

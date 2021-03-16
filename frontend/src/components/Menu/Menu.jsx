@@ -11,7 +11,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Menu from '@material-ui/core/Menu'
 
 
-export default function Home(){
+export default function Panel(){
    
    const [groups, setGroups] = useState([])
    const classes = useStyles();
