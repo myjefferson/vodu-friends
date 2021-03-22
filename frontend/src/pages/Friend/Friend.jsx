@@ -1,3 +1,4 @@
+import { Fade, Grow, Paper } from '@material-ui/core'
 import React, { Suspense, useCallback, useEffect, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
@@ -6,31 +7,32 @@ import api from '../../services/api'
 import './style/app.scss'
 import { useStyles } from './style/style'
 
-export default function Friend(){   
-   var setSkin, setHair, setShirt, setPant, setShoes
+export default function Friend(){  
 
    const url = window.location.search
    const param = new URLSearchParams(url)
    const paramAvatar = param.get('user_avatar')
-
-   api.get(`/avatars?user_avatar=${paramAvatar}`).then(res => {
-      const data = res.data.avatars
-      const index = data.filter(avatar => avatar.user_avatar === paramAvatar)
-      
-      if(index.length > 0){
-         setSkin = index[0].skin
-         setHair = index[0].hair
-         setShirt = index[0].shirt
-         setPant = index[0].pant
-         setShoes = index[0].shoes
-      }
-
-      console.log(index)
-   })
    
    const classes = useStyles();
 
    const Avatar = () => {
+      var setSkin, setHair, setShirt, setPant, setShoes
+
+      api.get(`/avatars?user_avatar=${paramAvatar}`).then(res => {
+         const data = res.data.avatars
+         const index = data.filter(avatar => avatar.user_avatar === paramAvatar)
+         
+         if(index.length > 0){
+            setSkin = index[0].skin
+            setHair = index[0].hair
+            setShirt = index[0].shirt
+            setPant = index[0].pant
+            setShoes = index[0].shoes
+         }
+   
+         console.log(index)
+      })
+
       //container
       const container = document.querySelector('#avatar')
 
@@ -70,8 +72,9 @@ export default function Friend(){
       controls.maxPolarAngle = 1.55;
       controls.minAzimuthAngle = Infinity; //horizontals
       controls.maxAzimuthAngle = 0;
+      controls.update()
       
-      var avatar, gltfObject;
+      var avatar;
 
       var loader = new GLTFLoader()
       loader.load('3d/avatar.gltf', (gltf) => {
@@ -79,7 +82,7 @@ export default function Friend(){
          avatar = gltf.scene.children[0]
          console.log(avatar) //map
          avatar.position.set(0,-90, 0)
-           
+         
          const btnSkin = document.getElementById('colorSkin')
          btnSkin.addEventListener("click", (event) => {
             const isButton = event.target.nodeName === 'BUTTON'
@@ -93,6 +96,7 @@ export default function Friend(){
             avatar.getObjectByName('Pescoco').material = skin
             
             setSkin = String(event.target.name)
+            
          })
 
          const btnHair = document.getElementById('colorHair')
@@ -117,6 +121,7 @@ export default function Friend(){
             avatar.getObjectByName('Shirt').material = shirt
 
             setShirt = String(event.target.name)
+         
          })
 
          const btnPant = document.getElementById('colorPant')
@@ -133,6 +138,7 @@ export default function Friend(){
             avatar.getObjectByName('RightPerna').material = pant 
             
             setPant = String(event.target.name)
+            
          })
 
          const btnShoes = document.getElementById('colorShoes')
@@ -145,7 +151,7 @@ export default function Friend(){
             
             avatar.getObjectByName('RightFoot').material = shoes
             avatar.getObjectByName('LeftFoot').material = shoes  
-            
+
             setShoes = String(event.target.name)
          })
 
@@ -177,12 +183,12 @@ export default function Friend(){
 
          animate()
       })  
-
+      
       const animate = function (){
          requestAnimationFrame(animate)
          renderer.render(scene, camera)
       } 
- 
+
       //Ajustment window
       function onWindowResize(){
          camera.aspect = container.clientWidth / container.clientHeight
@@ -192,111 +198,142 @@ export default function Friend(){
       }
 
       window.addEventListener('resize', onWindowResize)
+
+      const save = document.querySelector('.save')
+      save.addEventListener("click", () => {
+         const updates = {
+            skin: setSkin,
+            hair: setHair,
+            shirt: setShirt,
+            pant: setPant,
+            shoes: setShoes
+         }
+   
+         api.put(`/avatars/${paramAvatar}`, updates)
+
+         window.location.href = `?user_avatar=${paramAvatar}`
+      })
+
    }
 
-   function updateAvatar(){
+   //Animation Events
+   const [edit, setEdit] = useState(false)
 
-      const updates = {
-         skin: setSkin,
-         hair: setHair,
-         shirt: setShirt,
-         pant: setPant,
-         shoes: setShoes
-      }
+   const editChange = () => {
+      setEdit((prev) => !prev)
+   }
 
-      api.put(`/avatars/${paramAvatar}`, updates)
+   //btnEdit
+   const [btnEdit, setBtnEdit] = useState(true)
 
-      window.location.href = `?user_avatar=${paramAvatar}`
+   const btnEditChange = () => {
+      setBtnEdit((prev) => !prev)
    }
 
    return (
       <>  
-         { Avatar() }
+         {
+            useEffect(() => {
+               Avatar()
+            },[])
+         }
 
          <div className={classes.defaultContainer}>
+            <Fade in={btnEdit}>
+               <Paper elevation={4}>
+                  <div className={classes.headerBtnEdit}>
+                     <button onClick={() => {btnEditChange()}, () => {editChange()}} id="btnDefault" className={classes.btnEdit}>Edit Avatar</button>
+                  </div>
+               </Paper>
+            </Fade>
+
+            <Fade in={edit}>
+               <Paper elevation={4} className={classes.paper}>
+                  <div className={classes.boxBtnEdit}>
+                     <button className={classes.btnCancel} onClick={ () => btnEditChange, editChange} >Cancel</button>
+                     <button className={classes.btnSave, "save"} id="btnGreen">Save</button>
+                  </div>
+                  
+                  <div className={classes.boxLeft}>
+                     <div className={classes.div}>
+                        <p className={classes.p}>Color Skin</p>
+                        <div id='colorSkin'>
+                           <button className={classes.circles} name="0xFFC8A0" id="0" style={{background: '#FFC8A0',}}></button>
+                           <button className={classes.circles} name="0xD59F7B" id="1" style={{background: '#D59F7B',}}></button>
+                           <button className={classes.circles} name="0xCF965F" id="2" style={{background: '#CF965F',}}></button>
+                           <button className={classes.circles} name="0xB26644" id="3" style={{background: '#B26644',}}></button>
+                           <button className={classes.circles} name="0x783D2B" id="4" style={{background: '#783D2B',}}></button>
+                           <button className={classes.circles} name="0x613311" id="5" style={{background: '#613311',}}></button>
+                           <button className={classes.circles} name="0x552720" id="6" style={{background: '#552720',}}></button>
+                           <button className={classes.circles} name="0x321E1A" id="7" style={{background: '#321E1A',}}></button>
+                        </div>
+                     </div>
+
+                     <div className={classes.div}>
+                        <p className={classes.p}>Color Hair</p>
+                        <div id="colorHair">
+                           <button className={classes.circles} name="0x141414" id="0" style={{background: '#141414',}}></button>
+                           <button className={classes.circles} name="0x46251F" id="1" style={{background: '#46251F',}}></button>
+                           <button className={classes.circles} name="0xF8B22A" id="2" style={{background: '#F8B22A',}}></button>
+                           <button className={classes.circles} name="0xCBCBCB" id="3" style={{background: '#CBCBCB',}}></button>
+                           <button className={classes.circles} name="0xEB3131" id="4" style={{background: '#EB3131',}}></button>
+                           <button className={classes.circles} name="0x9211F6" id="5" style={{background: '#9211F6',}}></button>
+                           <button className={classes.circles} name="0x16A613" id="6" style={{background: '#16A613',}}></button>
+                           <button className={classes.circles} name="0x261BA1" id="7" style={{background: '#261BA1',}}></button>
+                        </div>
+                     </div>
+
+                     <div className={classes.div}>
+                        <p className={classes.p}>Color Shoes</p>
+                        <div id="colorShoes">
+                           <button className={classes.circles} name="0xF0F0F0" id="0" style={{background: '#F0F0F0',}}></button>
+                           <button className={classes.circles} name="0x292929" id="1" style={{background: '#292929',}}></button>
+                           <button className={classes.circles} name="0x7314EC" id="2" style={{background: '#7314EC',}}></button>
+                           <button className={classes.circles} name="0xCD2222" id="3" style={{background: '#CD2222',}}></button>
+                           <button className={classes.circles} name="0xC0DF00" id="4" style={{background: '#C0DF00',}}></button>
+                           <button className={classes.circles} name="0x223A25" id="5" style={{background: '#223A25',}}></button>
+                           <button className={classes.circles} name="0x4FAAD1" id="6" style={{background: '#4FAAD1',}}></button>
+                           <button className={classes.circles} name="0x5E002D" id="7" style={{background: '#5E002D',}}></button>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className={classes.boxRight}>
+                     <div className={classes.div}>
+                        <p className={classes.p}>Color Shirt</p>
+                        <div id="colorShirt">
+                           <button className={classes.circles} name="0xF2F2F2" id="0" style={{background: '#F2F2F2',}}></button>
+                           <button className={classes.circles} name="0x00E268" id="1" style={{background: '#00E268',}}></button>
+                           <button className={classes.circles} name="0xF55A9B" id="2" style={{background: '#F55A9B',}}></button>
+                           <button className={classes.circles} name="0x242424" id="3" style={{background: '#242424',}}></button>
+                           <button className={classes.circles} name="0xFFE350" id="4" style={{background: '#FFE350',}}></button>
+                           <button className={classes.circles} name="0xF10000" id="5" style={{background: '#F10000',}}></button>
+                           <button className={classes.circles} name="0x4DFFEA" id="6" style={{background: '#4DFFEA',}}></button>
+                           <button className={classes.circles} name="0xA67CFF" id="7" style={{background: '#A67CFF',}}></button>
+                        </div>
+                     </div>
+
+                     <div className={classes.div}>
+                        <p className={classes.p}>Color Pant</p>
+                        <div id="colorPant">
+                           <button className={classes.circles} name="0x3A3A3A" id="0" style={{background: '#3A3A3A',}}></button>
+                           <button className={classes.circles} name="0xFB3CFF" id="1" style={{background: '#FB3CFF',}}></button>
+                           <button className={classes.circles} name="0xD6D6D6" id="2" style={{background: '#D6D6D6',}}></button>
+                           <button className={classes.circles} name="0x6D8C4D" id="3" style={{background: '#6D8C4D',}}></button>
+                           <button className={classes.circles} name="0x0B2730" id="4" style={{background: '#0B2730',}}></button>
+                           <button className={classes.circles} name="0x361D7E" id="5" style={{background: '#361D7E',}}></button>
+                           <button className={classes.circles} name="0x652020" id="6" style={{background: '#652020',}}></button>
+                           <button className={classes.circles} name="0x77672F" id="7" style={{background: '#77672F',}}></button>
+                        </div>
+                     </div>
+                  </div>
+               </Paper>
          
-            <div className={classes.headerInfo}>
-               {/*<button className={classes.btnEdit} onClick={() => {handle()}} id="btnDefault">Edit</button>*/}
-               <button className={classes.btn} onClick={() => updateAvatar()} id="btnGreen">Save</button>
-            </div>
-
-            <div className={classes.boxLeft}>
-               <div className={classes.div}>
-                  <p className={classes.p}>Color Skin</p>
-                  <div id='colorSkin'>
-                     <button className={classes.circles} name="0xFFC8A0" id="0" style={{background: '#FFC8A0',}}></button>
-                     <button className={classes.circles} name="0xD59F7B" id="1" style={{background: '#D59F7B',}}></button>
-                     <button className={classes.circles} name="0xCF965F" id="2" style={{background: '#CF965F',}}></button>
-                     <button className={classes.circles} name="0xB26644" id="3" style={{background: '#B26644',}}></button>
-                     <button className={classes.circles} name="0x783D2B" id="4" style={{background: '#783D2B',}}></button>
-                     <button className={classes.circles} name="0x613311" id="5" style={{background: '#613311',}}></button>
-                     <button className={classes.circles} name="0x552720" id="6" style={{background: '#552720',}}></button>
-                     <button className={classes.circles} name="0x321E1A" id="7" style={{background: '#321E1A',}}></button>
-                  </div>
-               </div>
-
-               <div className={classes.div}>
-                  <p className={classes.p}>Color Hair</p>
-                  <div id="colorHair">
-                     <button className={classes.circles} name="0x141414" id="0" style={{background: '#141414',}}></button>
-                     <button className={classes.circles} name="0x46251F" id="1" style={{background: '#46251F',}}></button>
-                     <button className={classes.circles} name="0xF8B22A" id="2" style={{background: '#F8B22A',}}></button>
-                     <button className={classes.circles} name="0xCBCBCB" id="3" style={{background: '#CBCBCB',}}></button>
-                     <button className={classes.circles} name="0xEB3131" id="4" style={{background: '#EB3131',}}></button>
-                     <button className={classes.circles} name="0x9211F6" id="5" style={{background: '#9211F6',}}></button>
-                     <button className={classes.circles} name="0x16A613" id="6" style={{background: '#16A613',}}></button>
-                     <button className={classes.circles} name="0x261BA1" id="7" style={{background: '#261BA1',}}></button>
-                  </div>
-               </div>
-
-               <div className={classes.div}>
-                  <p className={classes.p}>Color Shoes</p>
-                  <div id="colorShoes">
-                     <button className={classes.circles} name="0xF0F0F0" id="0" style={{background: '#F0F0F0',}}></button>
-                     <button className={classes.circles} name="0x292929" id="1" style={{background: '#292929',}}></button>
-                     <button className={classes.circles} name="0x7314EC" id="2" style={{background: '#7314EC',}}></button>
-                     <button className={classes.circles} name="0xCD2222" id="3" style={{background: '#CD2222',}}></button>
-                     <button className={classes.circles} name="0xC0DF00" id="4" style={{background: '#C0DF00',}}></button>
-                     <button className={classes.circles} name="0x223A25" id="5" style={{background: '#223A25',}}></button>
-                     <button className={classes.circles} name="0x4FAAD1" id="6" style={{background: '#4FAAD1',}}></button>
-                     <button className={classes.circles} name="0x5E002D" id="7" style={{background: '#5E002D',}}></button>
-                  </div>
-               </div>
-            </div>
-
-            <div className={classes.boxRight}>
-               <div className={classes.div}>
-                  <p className={classes.p}>Color Shirt</p>
-                  <div id="colorShirt">
-                     <button className={classes.circles} name="0xF2F2F2" id="0" style={{background: '#F2F2F2',}}></button>
-                     <button className={classes.circles} name="0x00E268" id="1" style={{background: '#00E268',}}></button>
-                     <button className={classes.circles} name="0xF55A9B" id="2" style={{background: '#F55A9B',}}></button>
-                     <button className={classes.circles} name="0x242424" id="3" style={{background: '#242424',}}></button>
-                     <button className={classes.circles} name="0xFFE350" id="4" style={{background: '#FFE350',}}></button>
-                     <button className={classes.circles} name="0xF10000" id="5" style={{background: '#F10000',}}></button>
-                     <button className={classes.circles} name="0x4DFFEA" id="6" style={{background: '#4DFFEA',}}></button>
-                     <button className={classes.circles} name="0xA67CFF" id="7" style={{background: '#A67CFF',}}></button>
-                  </div>
-               </div>
-
-               <div className={classes.div}>
-                  <p className={classes.p}>Color Pant</p>
-                  <div id="colorPant">
-                     <button className={classes.circles} name="0x3A3A3A" id="0" style={{background: '#3A3A3A',}}></button>
-                     <button className={classes.circles} name="0xFB3CFF" id="1" style={{background: '#FB3CFF',}}></button>
-                     <button className={classes.circles} name="0xD6D6D6" id="2" style={{background: '#D6D6D6',}}></button>
-                     <button className={classes.circles} name="0x6D8C4D" id="3" style={{background: '#6D8C4D',}}></button>
-                     <button className={classes.circles} name="0x0B2730" id="4" style={{background: '#0B2730',}}></button>
-                     <button className={classes.circles} name="0x361D7E" id="5" style={{background: '#361D7E',}}></button>
-                     <button className={classes.circles} name="0x652020" id="6" style={{background: '#652020',}}></button>
-                     <button className={classes.circles} name="0x77672F" id="7" style={{background: '#77672F',}}></button>
-                  </div>
-               </div>
-            </div>
-
-            {/*<div className={classes.aboutUser}>
-               About User
-            </div>*/}
+               {/*<div className={classes.aboutUser}>
+                  About User
+               </div>*/}
+            
+            </Fade>
          </div>
       </>
    )

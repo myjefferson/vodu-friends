@@ -27,16 +27,21 @@ export default function Panel(){
 
 
    //CREATE A NEW GROUP
+   var redirect
    async function createGroup(){
       var newGroup = document.querySelector('#text-group').value
+      
+      redirect = uuid()
 
       const res = await api.post('/groups', {
-         id: uuid(),
+         id: redirect,
          name: `${newGroup}`
       });
 
       const group = res.data.groups
       setGroups([...groups, group])
+
+      window.location.href = `/inGroup?id=${redirect}`
    }
 
    //DELETE A GROUP

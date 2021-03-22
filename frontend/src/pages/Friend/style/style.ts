@@ -51,20 +51,37 @@ export const useStyles = makeStyles({
       right: '70px'
    },
 
-   headerInfo: {
-      position: 'relative',
+   boxBtnEdit: {
+      position: 'absolute',
       zIndex: 4,
-      width: '100% !important',
+      width: '250px',
+      right: '0',
       display: 'grid',
-      gridTemplateColumns: '80% 10%',
+      gridTemplateColumns: '40% 52%',
+      background: 'none'
+   },
+
+   btnEdit: {
+      position: 'absolute',
+      zIndex: 4,
+      right: '20px',
+      width: '130px !important',
+      height: '50px',
    },
    
-   btn: {
-      position: 'absolute',
-      zIndex: 1,
-      right: '0',
+   btnSave: {
       width: '100px !important',
       height: '50px',
+   }, 
+
+   btnCancel: {
+      fontSize: '19px',
+      width: '100px',
+      height: '50px',
+      border: 'none',
+      color: "#FF0000",
+      background: 'none',
+      cursor: 'pointer'
    },
 
    aboutUser : {
@@ -74,6 +91,5 @@ export const useStyles = makeStyles({
       height: '100%',
       marginTop: '50%',
       background: '#D1F4FF',
-   }
-
+   },
 })
