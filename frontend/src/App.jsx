@@ -15,6 +15,9 @@ export default function App() {
         <div id="containerScale">
           <Routes />
         </div>
+        <footer>
+          <p>Created with ❤ by Jefferson Carvalho</p>
+        </footer>
       </div>
       <GeneralStyle/>
     </>

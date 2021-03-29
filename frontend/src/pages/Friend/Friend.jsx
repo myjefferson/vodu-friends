@@ -1,5 +1,5 @@
-import { Fade, Grow, Paper } from '@material-ui/core'
-import React, { Suspense, useCallback, useEffect, useState } from 'react'
+import { Fade, Paper } from '@material-ui/core'
+import React, { useEffect, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
@@ -7,17 +7,22 @@ import api from '../../services/api'
 import './style/app.scss'
 import { useStyles } from './style/style'
 
-export default function Friend(){  
+//imgs
+import presente from '../../assets/img/presente.svg'
+import coracao from '../../assets/img/coracao.svg'
+import sorvete from '../../assets/img/sorvete.svg'
+import alfinetes from '../../assets/img/alfinetes.svg'
+import empurrar from '../../assets/img/empurrar.svg'
+import punhalada from '../../assets/img/punhalada.svg'
 
+export default function Friend(){ 
    const url = window.location.search
    const param = new URLSearchParams(url)
    const paramAvatar = param.get('user_avatar')
-   
-   const classes = useStyles();
 
-   const Avatar = () => {
+   const Avatar = () => {   
       var setSkin, setHair, setShirt, setPant, setShoes
-
+   
       api.get(`/avatars?user_avatar=${paramAvatar}`).then(res => {
          const data = res.data.avatars
          const index = data.filter(avatar => avatar.user_avatar === paramAvatar)
@@ -32,25 +37,25 @@ export default function Friend(){
    
          console.log(index)
       })
-
+   
       //container
       const container = document.querySelector('#avatar')
-
+   
       //scene
       const scene = new THREE.Scene()
-
+   
       //camera
       const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000)
       camera.position.set(0,8,185)
-
+   
       const ambient = new THREE.AmbientLight(0x404040)
       ambient.position.set(1,1,1)
       scene.add(ambient)
-
+   
       const light = new THREE.DirectionalLight(0xffffff, 1.1)
       light.position.set(22,1,30)
       scene.add(light)
-
+   
       const light2 = new THREE.DirectionalLight(0xffffff, 1.0)
       light2.position.set(-82,-70,-220)
       scene.add(light2)
@@ -61,7 +66,7 @@ export default function Friend(){
       renderer.setPixelRatio(window.devicePixelRatio)
       
       container.appendChild(renderer.domElement)
-
+   
       //controls
       const controls = new OrbitControls(camera, renderer.domElement)
       controls.enableZoom = false
@@ -75,7 +80,7 @@ export default function Friend(){
       controls.update()
       
       var avatar;
-
+   
       var loader = new GLTFLoader()
       loader.load('3d/avatar.gltf', (gltf) => {
          scene.add(gltf.scene)
@@ -86,9 +91,9 @@ export default function Friend(){
          const btnSkin = document.getElementById('colorSkin')
          btnSkin.addEventListener("click", (event) => {
             const isButton = event.target.nodeName === 'BUTTON'
-
+   
             var getColor = Number(event.target.name);
-
+   
             const skin = new THREE.MeshPhysicalMaterial({color: new THREE.Color(getColor), roughness: 0.58})
             avatar.getObjectByName('Head').material = skin
             avatar.getObjectByName('ArmLeft').material = skin
@@ -98,40 +103,40 @@ export default function Friend(){
             setSkin = String(event.target.name)
             
          })
-
+   
          const btnHair = document.getElementById('colorHair')
          btnHair.addEventListener("click", (event) => {
             const isButton = event.target.nodeName === 'BUTTON'
-
+   
             var getColor = Number(event.target.name);
-
+   
             const hair = new THREE.MeshPhysicalMaterial({color: new THREE.Color(getColor), roughness: 0.55})
             avatar.getObjectByName('Hair').material = hair
             
             setHair = String(event.target.name)
          })
-
+   
          const btnShirt = document.getElementById('colorShirt')
          btnShirt.addEventListener("click", (event) => {
             const isButton = event.target.nodeName === 'BUTTON'
-
+   
             var getColor = Number(event.target.name);
-
+   
             const shirt = new THREE.MeshPhysicalMaterial({color: new THREE.Color(getColor), roughness: 0.55})
             avatar.getObjectByName('Shirt').material = shirt
-
+   
             setShirt = String(event.target.name)
          
          })
-
+   
          const btnPant = document.getElementById('colorPant')
          btnPant.addEventListener("click", (event) => {
             const isButton = event.target.nodeName === 'BUTTON'
-
+   
             var getColor = Number(event.target.name);
-
+   
             const pant = new THREE.MeshPhysicalMaterial({color : new THREE.Color(getColor), roughness: 0.55})
-
+   
             avatar.getObjectByName('LeftThigh').material = pant
             avatar.getObjectByName('LeftPerna').material = pant
             avatar.getObjectByName('RightThigh').material = pant
@@ -140,21 +145,21 @@ export default function Friend(){
             setPant = String(event.target.name)
             
          })
-
+   
          const btnShoes = document.getElementById('colorShoes')
          btnShoes.addEventListener("click", (event) => {
             const isButton = event.target.nodeName === 'BUTTON'
-
+   
             var getColor = Number(event.target.name);
-
+   
             const shoes = new THREE.MeshPhysicalMaterial({color: new THREE.Color(getColor), roughness: 0.55})
             
             avatar.getObjectByName('RightFoot').material = shoes
             avatar.getObjectByName('LeftFoot').material = shoes  
-
+   
             setShoes = String(event.target.name)
          })
-
+   
          function setTextureAvatar(){
             //Skin
             const skin = new THREE.MeshPhysicalMaterial({color: new THREE.Color(Number(setSkin)), roughness: 0.58})
@@ -178,9 +183,9 @@ export default function Friend(){
             const shoes = new THREE.MeshPhysicalMaterial({color: new THREE.Color(Number(setShoes)), roughness: 0.55})      
             avatar.getObjectByName('RightFoot').material = shoes
             avatar.getObjectByName('LeftFoot').material = shoes    
-
+   
          } setTextureAvatar()
-
+   
          animate()
       })  
       
@@ -188,17 +193,17 @@ export default function Friend(){
          requestAnimationFrame(animate)
          renderer.render(scene, camera)
       } 
-
+   
       //Ajustment window
       function onWindowResize(){
          camera.aspect = container.clientWidth / container.clientHeight
          camera.updateProjectionMatrix();
-
+   
          renderer.setSize(container.clientWidth, container.clientHeight)
       }
-
+   
       window.addEventListener('resize', onWindowResize)
-
+   9
       const save = document.querySelector('.save')
       save.addEventListener("click", () => {
          const updates = {
@@ -210,11 +215,21 @@ export default function Friend(){
          }
    
          api.put(`/avatars/${paramAvatar}`, updates)
-
+   
          window.location.href = `?user_avatar=${paramAvatar}`
       })
-
+   
    }
+   
+   const classes = useStyles();
+
+   //Get info user
+   const [user, setUser] = useState([])
+   useEffect(() => {
+      api.get(`/avatars?user_avatar=${paramAvatar}`).then((res) => {
+         setUser(res.data.friends)
+      })
+   }, [])
 
    //Animation Events
    const [edit, setEdit] = useState(false)
@@ -239,10 +254,31 @@ export default function Friend(){
          }
 
          <div className={classes.defaultContainer}>
+            
+            {user.map(group => <h1 className={classes.h1}>{group.name} {group.surname}</h1>)}
+
             <Fade in={btnEdit}>
                <Paper elevation={4}>
-                  <div className={classes.headerBtnEdit}>
+                  <div className={classes.boxBtnEdit}>
                      <button onClick={() => {btnEditChange()}, () => {editChange()}} id="btnDefault" className={classes.btnEdit}>Edit Avatar</button>
+                  </div>
+
+                  <div className={classes.actionsAlign}>
+                     <div className={classes.actionsGrid}>
+                        <div className={classes.actions}>
+                           <p className={classes.pTitleBad}>Good actions</p>
+                           <button className={classes.btnGoodActions}><img src={coracao} className={classes.imgActions} /><p>Abraçar</p></button>
+                           <button className={classes.btnGoodActions}><img src={presente} className={classes.imgActions} /><p className={classes.pActions}>Presentear</p></button>
+                           <button className={classes.btnGoodActions}><img src={sorvete} className={classes.imgActions} /><p>Alimentar</p></button>
+                        </div>
+
+                        <div className={classes.actions}>
+                           <p className={classes.pTitleGood}>Bad actions</p>
+                           <button className={classes.btnBadActions}><img src={alfinetes} className={classes.imgActions} /><p>Alfinetar</p></button>
+                           <button className={classes.btnBadActions}><img src={empurrar} className={classes.imgActions} /><p>Empurrar</p></button>
+                           <button className={classes.btnBadActions}><img src={punhalada} className={classes.imgActions} /><p>Matar</p></button>
+                        </div>
+                     </div>
                   </div>
                </Paper>
             </Fade>
@@ -327,12 +363,7 @@ export default function Friend(){
                         </div>
                      </div>
                   </div>
-               </Paper>
-         
-               {/*<div className={classes.aboutUser}>
-                  About User
-               </div>*/}
-            
+               </Paper>            
             </Fade>
          </div>
       </>

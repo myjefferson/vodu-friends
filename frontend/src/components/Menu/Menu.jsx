@@ -1,15 +1,16 @@
 import 'boxicons'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 import {uuid} from 'uuidv4'
 //imgs
 import logo from '../../assets/img/vodu-friends-logo.png'
 import api from '../../services/api'
 //style
 import {useStyles} from './style'
-import { IconButton, MenuItem } from '@material-ui/core'
+import { IconButton, MenuItem, Fade, Paper } from '@material-ui/core'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import Pooper from '@material-ui/core/Popper'
 import Menu from '@material-ui/core/Menu'
-
+import IsolatedMenu from './scriptsMenu.jsx'
 
 export default function Panel(){
    
@@ -28,32 +29,24 @@ export default function Panel(){
 
    //CREATE A NEW GROUP
    var redirect
-   async function createGroup(){
+   function createGroup(){
       var newGroup = document.querySelector('#text-group').value
       
       redirect = uuid()
 
-      const res = await api.post('/groups', {
+      api.post('/groups', {
          id: redirect,
          name: `${newGroup}`
+      }).then(res => {
+         const group = res.data.groups
+         setGroups([...groups, group])
+
+         window.location.href = `/inGroup?id=${redirect}`
+         //console.log(res.data)
       });
 
-      const group = res.data.groups
-      setGroups([...groups, group])
-
-      window.location.href = `/inGroup?id=${redirect}`
-   }
-
-   //DELETE A GROUP
-   async function deleteGroup(idGroup){
-      api.delete(`groups/${idGroup}`).then(res => {
-         const result = res.data.groups
-
-         setGroups([result])
-         window.location.href = "/"
-         
-      }).catch((err) => { console.error('error' + err) })
-   }
+      
+   }   
 
    //MENU
    const [anchorEl, setAnchorEl] = useState(null);
@@ -84,7 +77,7 @@ export default function Panel(){
                
                <input type="text" id="text-group"/>
 
-               <button type="submit" id="btnGreen" onClick={() => createGroup()}>
+               <button type="button" id="btnGreen" onClick={() => createGroup()}>
                   Create group
                </button>
             </form>
@@ -95,6 +88,7 @@ export default function Panel(){
                {groups.map(group => 
                   <>
                      <div className={classes.Groups} key={group.id}>
+                        
                         <a 
                            className={classes.A} 
                            href={`/inGroup?id=${group.id}`} 
@@ -103,36 +97,10 @@ export default function Panel(){
                               className={classes.Li}>{group.name}
                            </li>
                         </a>
-                        <IconButton
-                           className={classes.Menu}
-                           aria-label="more"
-                           aria-controls="long-menu"
-                           aria-haspopup="true"
-                           onClick={handleClick}
-                        >
-                           <MoreVertIcon  />
-                        </IconButton>
-
-                        <Menu 
-                           id="long-menu"
-                           anchorEl={anchorEl}
-                           keepMounted
-                           open={open}
-                           onClose={handleClose}
-                           PaperProps={{
-                              style: {
-                                 maxHeight: 30 * 4,
-                                 width: '8ch'  
-                              }
-                           }}
-                        >
-                           <MenuItem onClick={handleClose}>Rename</MenuItem>
-                           <MenuItem onClick={ () => {deleteGroup(group.id)} }>Delete</MenuItem>                           
-                        </Menu>
+                        <IsolatedMenu id={group.id} />
                      </div>
                   </>
                   )
-                  
                }            
             </div>
          </div>

@@ -16,7 +16,6 @@ export const useStyles = makeStyles({
    h1: {
       marginTop: '15px',
       color: '#fff',
-      float: 'left'
    },
 
    div: {
@@ -54,8 +53,9 @@ export const useStyles = makeStyles({
    boxBtnEdit: {
       position: 'absolute',
       zIndex: 4,
+      top: '50px',
       width: '250px',
-      right: '0',
+      right: '45px',
       display: 'grid',
       gridTemplateColumns: '40% 52%',
       background: 'none'
@@ -67,11 +67,13 @@ export const useStyles = makeStyles({
       right: '20px',
       width: '130px !important',
       height: '50px',
+      outline: 'none'
    },
    
    btnSave: {
       width: '100px !important',
       height: '50px',
+      outline: 'none'
    }, 
 
    btnCancel: {
@@ -81,7 +83,8 @@ export const useStyles = makeStyles({
       border: 'none',
       color: "#FF0000",
       background: 'none',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      outline: 'none'
    },
 
    aboutUser : {
@@ -92,4 +95,71 @@ export const useStyles = makeStyles({
       marginTop: '50%',
       background: '#D1F4FF',
    },
+
+   actions: {
+      width: '210px'
+   },
+
+   actionsGrid: {
+      justifyItems: 'center',
+      display: 'grid',
+      gridTemplateColumns: '40% 14%'
+   },
+
+   actionsAlign: {
+      zIndex: 4,
+      position: 'fixed',
+      bottom: '80px',
+      width: '100%',
+   },
+
+   btnGoodActions: {
+      fontSize: '12px',
+      textAlign: 'center',
+      color: '#fff',
+      margin: '0 0 0 20px',
+      width: '45px',
+      height: '45px',
+      cursor: 'pointer',
+      borderRadius: '100px',
+      border: '3px solid #14AAFF',
+      backgroundColor: '#3C4060',
+      padding: '0 0 0 0'
+   },
+
+   btnBadActions: {
+      fontSize: '12px',
+      textAlign: 'center',
+      color: '#fff',
+      margin: '0 0 0 20px',
+      width: '45px',
+      height: '45px',
+      cursor: 'pointer',
+      borderRadius: '100px',
+      border: '3px solid #FF2C2C',
+      backgroundColor: '#3C4060',
+      padding: '0 0 0 0'
+   },
+
+   imgActions: {
+      margin: '6px 0 0 -2px',
+      width: '27px',
+      height: '27px',
+   },
+
+   pTitleGood: {
+      textAlign: 'center',
+      fontWeight: 'bold',
+      color: '#FF2C2C'
+   },
+
+   pTitleBad: {
+      textAlign: 'center',
+      fontWeight: 'bold',
+      color: '#14AAFF'
+   },
+
+   pActions: {
+      width: 'max-content'
+   }
 })

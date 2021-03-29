@@ -23,6 +23,7 @@ export const useStyles = makeStyles({
    },
 
    Groups: {
+      position: 'relative',
       cursor: 'pointer',
       display: 'block',
       color: '#fff',
@@ -41,6 +42,12 @@ export const useStyles = makeStyles({
    Menu: {
       color: '#fff !important',
       float: 'right',
-      margin: '-33px -15px 0 0 !important'
+      margin: '-43px -18px 0 0 !important'
+   },
+
+   typeText: {
+      top: '-13px',
+      left: '0',
+      position: 'absolute'
    }
 })

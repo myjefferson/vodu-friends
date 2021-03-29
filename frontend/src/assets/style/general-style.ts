@@ -112,4 +112,19 @@ export default createGlobalStyle`
       transition: 1s;
    }
 
+   /*Footer*/
+   footer{
+      background: #0E0F13;
+      position: fixed;
+      z-index: 5;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+   }
+
+   footer p {
+      text-align: center;
+      color: white;
+      font-size: 13px;
+   }
 `

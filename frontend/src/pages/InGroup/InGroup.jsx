@@ -161,8 +161,8 @@ export default function MyFriends(){
                            <p>Surname</p>
                            <input type="text" id='surname'/>
                         </div>
-                        <button id="btnGreen" onClick={() => {createPerson(); handleClose()}}>Confirm</button>
-                        <button id="btnRed" onClick={handleClose}>Cancel</button>
+                        <button id="btnGreen" type="button" onClick={() => {createPerson(); handleClose()}}>Confirm</button>
+                        <button id="btnRed" type="button" onClick={handleClose}>Cancel</button>
                      </form>
                   </div>
                </div>
