@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Panel from './components/Menu/Menu'
+import Panel from './pages/components/Menu/Menu'
 
 import Routes from './routes/routes'
 import GeneralStyle from './assets/style/general-style'

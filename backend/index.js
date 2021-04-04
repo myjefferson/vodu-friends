@@ -66,13 +66,24 @@ app.post('/groups', (req, res) => {
    return res.json(insert)
 })
 
-app.get('/inGroup', (req,res) => {
-   const {id} = req.query
+app.put('/groups/:id', (req, res) => {
+   const {id} = req.params
+   const {name} = req.body
 
-   const group = object.groups.filter(group => group.id === id)
-   const friends = object.friends.filter(friends => friends.id_group === id)
+   const indexGroup = object.groups.findIndex(group => group.id === id)
 
-   return res.json({group, friends})
+   const upRename = {
+      id,
+      name
+   }
+
+   object.groups[indexGroup] = upRename
+
+   const insert = object
+   fs.writeFile('./data/data.json', JSON.stringify(insert), (err) => {
+      if(err) throw err
+   })
+   return res.json(upRename)
 })
 
 app.delete('/groups/:id', (req,res) => {
@@ -101,6 +112,15 @@ app.delete('/groups/:id', (req,res) => {
 })
 
 //FRIENDS
+app.get('/friends', (req,res) => {
+   const {id} = req.query
+
+   const group = object.groups.filter(group => group.id === id)
+   const friends = object.friends.filter(friends => friends.id_group === id)
+
+   return res.json({group, friends})
+})
+
 app.get('/friends/:id', (req, res) => {
    const reqBody = req.body
    
@@ -145,6 +165,30 @@ app.delete('/friends/:id', (req,res) => {
    })
 
    return res.json(insert)
+})
+
+//FRIEND
+app.put('/friend/:id', (req,res) => {
+   const {id} = req.params
+   const {name,surname, id_group} = req.body
+
+   const indexFriend = object.friends.findIndex(friend => friend.id === id)
+
+   const update = {
+      id,
+      name,
+      surname,
+      id_group
+   }
+
+   object.friends[indexFriend] = update
+
+   const insert = object
+   fs.writeFile('./data/data.json', JSON.stringify(insert), (err) => {
+      if(err) throw err
+   })
+
+   res.json(insert)
 })
 
 //AVATAR

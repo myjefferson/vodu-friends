@@ -55,8 +55,9 @@ export default createGlobalStyle`
    }
 
    #btnRed{
-      background: #FF2C2C;
+      background: #F8610C;
       border: 1px solid #FF2C2C;
+      color: #fff;
    }
 
    #btnGreen{

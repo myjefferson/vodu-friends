@@ -19,10 +19,10 @@ export default function Friend(){
    const url = window.location.search
    const param = new URLSearchParams(url)
    const paramAvatar = param.get('user_avatar')
-
-   const Avatar = () => {   
-      var setSkin, setHair, setShirt, setPant, setShoes
    
+   const Avatar = () => {
+      var setSkin, setHair, setShirt, setPant, setShoes
+
       api.get(`/avatars?user_avatar=${paramAvatar}`).then(res => {
          const data = res.data.avatars
          const index = data.filter(avatar => avatar.user_avatar === paramAvatar)
@@ -34,8 +34,21 @@ export default function Friend(){
             setPant = index[0].pant
             setShoes = index[0].shoes
          }
-   
+
          console.log(index)
+      })
+
+      const save = document.querySelector('.save')
+      save.addEventListener("click", () => {
+         const updates = {
+            skin: setSkin,
+            hair: setHair,
+            shirt: setShirt,
+            pant: setPant,
+            shoes: setShoes
+         }
+
+         api.put(`/avatars/${paramAvatar}`, updates)
       })
    
       //container
@@ -90,7 +103,6 @@ export default function Friend(){
          
          const btnSkin = document.getElementById('colorSkin')
          btnSkin.addEventListener("click", (event) => {
-            const isButton = event.target.nodeName === 'BUTTON'
    
             var getColor = Number(event.target.name);
    
@@ -106,7 +118,6 @@ export default function Friend(){
    
          const btnHair = document.getElementById('colorHair')
          btnHair.addEventListener("click", (event) => {
-            const isButton = event.target.nodeName === 'BUTTON'
    
             var getColor = Number(event.target.name);
    
@@ -118,7 +129,6 @@ export default function Friend(){
    
          const btnShirt = document.getElementById('colorShirt')
          btnShirt.addEventListener("click", (event) => {
-            const isButton = event.target.nodeName === 'BUTTON'
    
             var getColor = Number(event.target.name);
    
@@ -131,7 +141,6 @@ export default function Friend(){
    
          const btnPant = document.getElementById('colorPant')
          btnPant.addEventListener("click", (event) => {
-            const isButton = event.target.nodeName === 'BUTTON'
    
             var getColor = Number(event.target.name);
    
@@ -148,7 +157,6 @@ export default function Friend(){
    
          const btnShoes = document.getElementById('colorShoes')
          btnShoes.addEventListener("click", (event) => {
-            const isButton = event.target.nodeName === 'BUTTON'
    
             var getColor = Number(event.target.name);
    
@@ -183,10 +191,10 @@ export default function Friend(){
             const shoes = new THREE.MeshPhysicalMaterial({color: new THREE.Color(Number(setShoes)), roughness: 0.55})      
             avatar.getObjectByName('RightFoot').material = shoes
             avatar.getObjectByName('LeftFoot').material = shoes    
-   
-         } setTextureAvatar()
+         } 
    
          animate()
+         setTextureAvatar()
       })  
       
       const animate = function (){
@@ -202,25 +210,9 @@ export default function Friend(){
          renderer.setSize(container.clientWidth, container.clientHeight)
       }
    
-      window.addEventListener('resize', onWindowResize)
-   9
-      const save = document.querySelector('.save')
-      save.addEventListener("click", () => {
-         const updates = {
-            skin: setSkin,
-            hair: setHair,
-            shirt: setShirt,
-            pant: setPant,
-            shoes: setShoes
-         }
-   
-         api.put(`/avatars/${paramAvatar}`, updates)
-   
-         window.location.href = `?user_avatar=${paramAvatar}`
-      })
-   
+      window.addEventListener('resize', onWindowResize)     
    }
-   
+
    const classes = useStyles();
 
    //Get info user
@@ -245,13 +237,15 @@ export default function Friend(){
       setBtnEdit((prev) => !prev)
    }
 
+   const editCancel = () =>{
+      window.location.reload()
+   }
+
    return (
       <>  
-         {
-            useEffect(() => {
+         {  useEffect(() => {
                Avatar()
-            },[])
-         }
+            },[]) }
 
          <div className={classes.defaultContainer}>
             
@@ -286,8 +280,8 @@ export default function Friend(){
             <Fade in={edit}>
                <Paper elevation={4} className={classes.paper}>
                   <div className={classes.boxBtnEdit}>
-                     <button className={classes.btnCancel} onClick={ () => btnEditChange, editChange} >Cancel</button>
-                     <button className={classes.btnSave, "save"} id="btnGreen">Save</button>
+                     <button type="button" className={classes.btnCancel} onClick={ () => btnEditChange, editChange, editCancel} >Cancel</button>
+                     <button type="button" className={classes.btnSave, "save"} onClick={() => btnEditChange, editChange} id="btnGreen">Save</button>
                   </div>
                   
                   <div className={classes.boxLeft}>

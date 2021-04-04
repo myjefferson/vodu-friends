@@ -2,8 +2,8 @@ import React from 'react'
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 
 //Pages
-import Friend from '../pages/Friend/Friend'
-import InGroup from '../pages/InGroup/InGroup'
+import Friends from '../pages/Friends/Friends'
+import Avatar from '../pages/Avatar/Avatar'
 import Presentation from '../pages/Presentation/Presentation'
 
 export default function Routes(){
@@ -12,8 +12,8 @@ export default function Routes(){
          <Switch>
             <Route exact path="/" component={Presentation} />
             <Route path="/addGroup" component="" />
-            <Route path="/friend" component={Friend} />
-            <Route path="/inGroup" component={InGroup}/>
+            <Route path="/avatar" component={Avatar} />
+            <Route path="/friends" component={Friends}/>
          </Switch>
       </BrowserRouter>
    )

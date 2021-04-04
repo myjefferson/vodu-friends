@@ -2,15 +2,11 @@ import 'boxicons'
 import React, { useEffect, useState, Fragment } from 'react'
 import {uuid} from 'uuidv4'
 //imgs
-import logo from '../../assets/img/vodu-friends-logo.png'
-import api from '../../services/api'
+import logo from '../../../assets/img/vodu-friends-logo.png'
+import api from '../../../services/api'
 //style
 import {useStyles} from './style'
-import { IconButton, MenuItem, Fade, Paper } from '@material-ui/core'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-import Pooper from '@material-ui/core/Popper'
-import Menu from '@material-ui/core/Menu'
-import IsolatedMenu from './scriptsMenu.jsx'
+import IsolatedMenu from './optionsMenu.jsx'
 
 export default function Panel(){
    
@@ -26,7 +22,6 @@ export default function Panel(){
       })
    }, [])
 
-
    //CREATE A NEW GROUP
    var redirect
    function createGroup(){
@@ -36,51 +31,36 @@ export default function Panel(){
 
       api.post('/groups', {
          id: redirect,
-         name: `${newGroup}`
+         name: `${newGroup}`,
       }).then(res => {
          const group = res.data.groups
          setGroups([...groups, group])
 
-         window.location.href = `/inGroup?id=${redirect}`
-         //console.log(res.data)
+         window.location.href = `/friends?id=${redirect}`
       });
-
-      
    }   
-
-   //MENU
-   const [anchorEl, setAnchorEl] = useState(null);
-   const open = Boolean(anchorEl);
- 
-   const handleClick = (event) => {
-     setAnchorEl(event.currentTarget)
-   };
- 
-   const handleClose = () => {
-     setAnchorEl(null);
-   };
 
    return(
       <>
          <div className={classes.div} id='scrollMenu'>
             <a href="/"><img className={classes.img} src={logo} alt="VoDu Friends"/></a>
 
-            <button type="submit" className="" id="btnGreen" name="btnAddGroup" onClick={() => showAddGroup()}>
+            <button type="submit" className="" id="btnGreen" name="btnAddGroup" onClick={() => {showAddGroup()}}>
                Add people group
             </button>
 
-            <form action="" id="formGroup" className="hidden" autoComplete='off'>
+            <div action="" id="formGroup" className="hidden" on>
                <label id="tip">Group's name</label>
                <div className={classes.AlignRight}>
-                  <box-icon name='x' size='25px' color='#FFDD2B' onClick={() => hiddenAddGroup()}></box-icon>
+                  <box-icon name='x' size='25px' color='#FFDD2B' onClick={() => {hiddenAddGroup()}}></box-icon>
                </div>
                
                <input type="text" id="text-group"/>
 
-               <button type="button" id="btnGreen" onClick={() => createGroup()}>
+               <button type="button" id="btnGreen" onClick={() => {createGroup()}}>
                   Create group
                </button>
-            </form>
+            </div>
 
             <hr/>
             
@@ -88,16 +68,15 @@ export default function Panel(){
                {groups.map(group => 
                   <>
                      <div className={classes.Groups} key={group.id}>
-                        
-                        <a 
-                           className={classes.A} 
-                           href={`/inGroup?id=${group.id}`} 
+                        <a
+                           className={classes.Anchor} 
+                           href={`/friends?id=${group.id}`} 
                         >
-                           <li 
+                           <li
                               className={classes.Li}>{group.name}
                            </li>
                         </a>
-                        <IsolatedMenu id={group.id} />
+                        <IsolatedMenu id={group.id} name={group.name} />
                      </div>
                   </>
                   )

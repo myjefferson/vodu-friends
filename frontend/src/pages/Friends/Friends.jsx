@@ -5,6 +5,7 @@ import Menu from '@material-ui/core/Menu'
 import Modal from '@material-ui/core/Modal'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import React, { useEffect, useState } from 'react'
+import IsolatedMenuFriend from './optionsFriends'
 import { uuid } from 'uuidv4'
 import api from '../../services/api'
 import { useModal, useStyles } from './style'
@@ -19,6 +20,7 @@ export default function MyFriends(){
    //Modal
    const classes = useStyles();
    const modal = useModal();
+
    const [open, setOpen] = useState(false)
 
    const handleOpen = () => {
@@ -34,7 +36,7 @@ export default function MyFriends(){
    const [group, setGroup] = useState([])
 
    useEffect(() => {
-      api.get(`inGroup?id=${tags}`).then(res => {
+      api.get(`friends?id=${tags}`).then(res => {
          setFriends(res.data.friends)
          setGroup(res.data.group)
 
@@ -70,7 +72,7 @@ export default function MyFriends(){
 
       setFriends([...friends, friend])
 
-      window.location.href = `/inGroup?id=${tags}`
+      window.location.href = `/friends?id=${tags}`
    }
 
    //Menu Friend
@@ -85,11 +87,6 @@ export default function MyFriends(){
       setAnchorEl(null)
    }
 
-   function removeFriend(id){
-      api.delete(`/friends/${id}`)
-      window.location.href = `inGroup?id=${tags}`
-   }
-
    return(
       <>
          <div className={classes.header}>
@@ -99,39 +96,14 @@ export default function MyFriends(){
          <div className={classes.container}>     
             {friends.map(friend => 
                <div className={classes.friend} key={friend.id}>
-                  <a href={`friend?user_avatar=${friend.id}`}>
+                  <a href={`avatar?user_avatar=${friend.id}`} className={classes.A}>
                      <li className={classes.li}>
                         <img src="" alt={friends.name}></img>
                         {friend.name} <br/>
                      </li>
                   </a>
 
-                  <IconButton
-                     className={classes.options}
-                     aria-label="more"
-                     aria-controls="long-menu"
-                     aria-haspopup="true"
-                     onClick={handleClickFriend}
-                  >
-                     <MoreVertIcon/>
-                  </IconButton>
-
-                  <Menu
-                     id="long-menu"
-                     anchorEl={anchorEl}
-                     keepMounted
-                     open={options}
-                     onClose={handleCloseFriend}
-                     PaperProps={{
-                        style: {
-                           maxHeight: 30 * 4,
-                           width: '10ch'
-                        }
-                     }}
-                  >
-                     <MenuItem onClick={handleCloseFriend}>Rename</MenuItem>
-                     <MenuItem onClick={ () => removeFriend(friend.id)}>Delete Friend</MenuItem>
-                  </Menu>
+                  <IsolatedMenuFriend id={friend.id} name={friend.name}/>
                </div> )
             }
          </div>
@@ -148,23 +120,21 @@ export default function MyFriends(){
                timeout: 500,
             }}
          >
-            <Fade in={open}>
-               <div className={classes.styledModal}>
-                  <div  className={modal.paper}>
-                     <form autoComplete='off'>
-                        <h2>Register person</h2>
-                        <div style={{width: 230, float: 'left'}}>
-                           <p>Name</p>
-                           <input type="text" id='name'/>
-                        </div>
-                        <div style={{width: 230, float: 'left', marginLeft: 15}}>
-                           <p>Surname</p>
-                           <input type="text" id='surname'/>
-                        </div>
-                        <button id="btnGreen" type="button" onClick={() => {createPerson(); handleClose()}}>Confirm</button>
-                        <button id="btnRed" type="button" onClick={handleClose}>Cancel</button>
-                     </form>
-                  </div>
+            <Fade in={open} className={classes.styledModal}>
+               <div  className={modal.paper}>
+                  <form autoComplete='off'>
+                     <h2>Register person</h2>
+                     <div style={{width: 230, float: 'left'}}>
+                        <p>Name</p>
+                        <input type="text" id='name'/>
+                     </div>
+                     <div style={{width: 230, float: 'left', marginLeft: 15}}>
+                        <p>Surname</p>
+                        <input type="text" id='surname'/>
+                     </div>
+                     <button id="btnGreen" type="button" onClick={() => {createPerson(); handleClose()}}>Confirm</button>
+                     <button id="btnRed" type="button" onClick={handleClose}>Cancel</button>
+                  </form>
                </div>
             </Fade>
          </Modal>

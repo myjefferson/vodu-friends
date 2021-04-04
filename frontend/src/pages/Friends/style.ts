@@ -1,4 +1,3 @@
-import { Backdrop } from '@material-ui/core'
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 
 export const useStyles = makeStyles({
@@ -66,7 +65,18 @@ export const useStyles = makeStyles({
    header: {
       position: 'relative',
       zIndex: 1,
+   },
+
+   Menu: {
+      color: '#fff !important',
+      float: 'right',
+      margin: '-33px -16px -13px 0 !important'
+   },
+
+   A: {
+      textDecoration: 'none'
    }
+   
 })
 
 export const useModal = makeStyles((theme: Theme) =>{
@@ -82,6 +92,21 @@ export const useModal = makeStyles((theme: Theme) =>{
          boxShadow: theme.shadows[5],
          backgroundColor: theme.palette.background.paper,
          border: '2px solid #000',
+      }
+   })
+})
+
+export const useRename = makeStyles((theme: Theme) => {
+   createStyles({
+      modal: {
+         display: 'flex',
+         alignItems: 'center',
+         justifyContent: 'center'
       },
+      paper: {
+         position: 'absolute',
+         boxShadow: theme.shadows[5],
+         backgroundColor: theme.palette.background.paper,
+      }
    })
 })

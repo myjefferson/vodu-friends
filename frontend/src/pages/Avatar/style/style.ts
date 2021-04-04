@@ -107,7 +107,7 @@ export const useStyles = makeStyles({
    },
 
    actionsAlign: {
-      zIndex: 4,
+      zIndex: 2,
       position: 'fixed',
       bottom: '80px',
       width: '100%',
